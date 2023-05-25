@@ -22,12 +22,14 @@ struct gpio_pin {
 int pin_init(struct gpio_pin* pin, int pin_id) {
 
 	if (true == pin->initialized) {
+		printf("pin_init: pin already initialized\n");
 		return -1;
 	}
 	
 	int fd = open("/sys/class/gpio/export", O_WRONLY);
 
 	if (0 > fd) {
+		perror("pin_init: open");
 		return -1;
 	}
 
@@ -36,6 +38,7 @@ int pin_init(struct gpio_pin* pin, int pin_id) {
 	close(fd);
 
 	if (0 > write_res) {
+		perror("pin_init: dprintf");
 		return -1;
 	}
 
@@ -46,6 +49,7 @@ int pin_init(struct gpio_pin* pin, int pin_id) {
 
 int pin_mode(struct gpio_pin* pin, char mode) {
 	if (true != pin->initialized) {
+		printf("pin_mode: pin not initialized\n");
 		return -1; // Pin isn't initialized!
 	}
 
@@ -55,7 +59,8 @@ int pin_mode(struct gpio_pin* pin, char mode) {
 
 	int fd = open(fp, O_WRONLY);
 	if (0 > fd) {
-		return 0;
+		perror("pin_mode: open");
+		return -1;
 	}
 	
 	int write_res;
@@ -69,6 +74,7 @@ int pin_mode(struct gpio_pin* pin, char mode) {
 	close(fd);
 
 	if (0 > write_res) {
+		perror("pin_mode: dprintf");
 		return -1;
 	}
 
@@ -80,10 +86,12 @@ int pin_mode(struct gpio_pin* pin, char mode) {
 
 int pin_write(struct gpio_pin* pin, int value) {
 	if (true != pin->initialized) {
+		printf("pin_write: pin not initialized\n");
 		return -1;
 	}
 
 	if (PIN_OUT != pin->mode) {
+		printf("pin_write: pin not set to PIN_OUT mode\n");
 		return -1;
 	}
 
@@ -93,6 +101,7 @@ int pin_write(struct gpio_pin* pin, int value) {
 
 	int fd = open(fp, O_WRONLY);
 	if (0 > fd) {
+		perror("pin_write: open");
 		return -1;
 	}
 
@@ -100,6 +109,7 @@ int pin_write(struct gpio_pin* pin, int value) {
 
 	int write_res = dprintf(fd, "%d", value);
 	if (0 > write_res) {
+		perror("pin_write: dprintf");
 		return -1;
 	}
 	
@@ -109,10 +119,12 @@ int pin_write(struct gpio_pin* pin, int value) {
 
 char pin_read(struct gpio_pin* pin) {
 	if (true != pin->initialized) {
+		printf("pin_read: pin not initialized\n");
 		return -1;
 	}
 
 	if (PIN_IN != pin->mode) {
+		printf("pin_read: pin not set to PIN_IN mode\n");
 		return -1;
 	}
 
@@ -121,6 +133,7 @@ char pin_read(struct gpio_pin* pin) {
 
 	int fd = open(fp, O_RDONLY);
 	if (0 > fd) {
+		perror("pin_read: open");
 		return -1;
 	}
 
@@ -130,6 +143,7 @@ char pin_read(struct gpio_pin* pin) {
 	close(fd);
 
 	if (1 != read_res) {
+		perror("pin_read: read");
 		return -1;
 	}
 
@@ -139,10 +153,12 @@ char pin_read(struct gpio_pin* pin) {
 int pin_close(struct gpio_pin* pin) {
 	if (true != pin->initialized) {
 		return -1;
+		printf("pin_close: pin not initialized\n");
 	}
 
 	int fd = open("/sys/class/gpio/unexport", O_WRONLY);
 	if (0 > fd) {
+		perror("pin_close: open");
 		return -1;
 	}
 
@@ -151,6 +167,7 @@ int pin_close(struct gpio_pin* pin) {
 	close(fd);
 
 	if (0 > write_res) {
+		perror("pin_close: dprintf");
 		return -1;
 	}
 
