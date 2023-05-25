@@ -43,6 +43,7 @@ int pin_init(struct gpio_pin* pin, int pin_id) {
 	}
 
 	pin->initialized = true;
+	pin->pin_id = pin_id;
 
 	return 0;
 }
@@ -60,6 +61,7 @@ int pin_mode(struct gpio_pin* pin, char mode) {
 	int fd = open(fp, O_WRONLY);
 	if (0 > fd) {
 		perror("pin_mode: open");
+		puts(fp);
 		return -1;
 	}
 	
@@ -102,6 +104,7 @@ int pin_write(struct gpio_pin* pin, int value) {
 	int fd = open(fp, O_WRONLY);
 	if (0 > fd) {
 		perror("pin_write: open");
+		puts(fp);
 		return -1;
 	}
 
@@ -134,6 +137,7 @@ char pin_read(struct gpio_pin* pin) {
 	int fd = open(fp, O_RDONLY);
 	if (0 > fd) {
 		perror("pin_read: open");
+		puts(fp);
 		return -1;
 	}
 
