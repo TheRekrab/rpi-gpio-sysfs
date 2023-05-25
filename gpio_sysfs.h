@@ -108,9 +108,10 @@ int pin_write(struct gpio_pin* pin, int value) {
 		return -1;
 	}
 
+	int write_res = dprintf(fd, "%d", value);
+
 	close(fd);
 
-	int write_res = dprintf(fd, "%d", value);
 	if (0 > write_res) {
 		perror("pin_write: dprintf");
 		return -1;
