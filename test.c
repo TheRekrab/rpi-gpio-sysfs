@@ -19,5 +19,7 @@ int main() {
 
 	pin_close(pin4);
 
+	free(pin4);
+
 	return EXIT_SUCCESS;
 }
