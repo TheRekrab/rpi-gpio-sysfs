@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include "gpio_sysfs.h"
+#include "../gpio_sysfs.h"
 
 int main() {
 	struct gpio_pin* pin4 = malloc(sizeof(struct gpio_pin));
